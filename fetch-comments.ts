@@ -61,6 +61,8 @@ class PRCommentsFetcher {
   private owner: string;
   private repo: string;
   private prNumber: number;
+  private prTitle: string = '';
+  private prAuthor: string = '';
 
   constructor() {
     // Check if gh CLI is installed and authenticated
@@ -181,11 +183,15 @@ class PRCommentsFetcher {
   private async fetchReviewComments(): Promise<GitHubComment[]> {
     console.log('💬 Fetching review comments...');
     
-    // Use GraphQL API via gh CLI to get resolved status
+    // Use GraphQL API via gh CLI to get resolved status and PR info
     const graphqlQuery = `
       query($owner: String!, $repo: String!, $prNumber: Int!) {
         repository(owner: $owner, name: $repo) {
           pullRequest(number: $prNumber) {
+            title
+            author {
+              login
+            }
             reviewThreads(first: 100) {
               nodes {
                 isResolved
@@ -229,7 +235,14 @@ class PRCommentsFetcher {
         throw new Error('GraphQL error');
       }
 
-      const threads = graphqlData.data?.repository?.pullRequest?.reviewThreads?.nodes || [];
+      // Extract PR title and author
+      const pullRequest = graphqlData.data?.repository?.pullRequest;
+      if (pullRequest) {
+        this.prTitle = pullRequest.title || '';
+        this.prAuthor = pullRequest.author?.login || '';
+      }
+
+      const threads = pullRequest?.reviewThreads?.nodes || [];
       const comments: GitHubComment[] = [];
 
       for (const thread of threads) {
@@ -264,6 +277,16 @@ class PRCommentsFetcher {
     } catch (error) {
       // Fallback to REST API (without resolved status)
       console.log('⚠️ Using REST API (resolved status will be unavailable)...');
+      
+      // Try to fetch PR info from REST API as fallback
+      try {
+        const prInfo = this.ghApi(`/repos/${this.owner}/${this.repo}/pulls/${this.prNumber}`);
+        this.prTitle = prInfo.title || '';
+        this.prAuthor = prInfo.user?.login || '';
+      } catch (e) {
+        // If we can't get PR info, that's OK - we'll just not show it
+      }
+      
       const comments = this.ghApi(`/repos/${this.owner}/${this.repo}/pulls/${this.prNumber}/comments`);
       return comments.map((c: any) => ({ ...c, resolved: false }));
     }
@@ -351,6 +374,15 @@ class PRCommentsFetcher {
     const progressBar = '█'.repeat(filledLength) + '░'.repeat(emptyLength);
 
     let markdown = `# PR #${this.prNumber} - Comments Status\n\n`;
+    
+    // PR Title and Author (if available)
+    if (this.prTitle) {
+      markdown += `## 📌 ${this.prTitle}\n\n`;
+    }
+    if (this.prAuthor) {
+      markdown += `**Author:** @${this.prAuthor}\n\n`;
+    }
+    
     markdown += `**PR Link:** [${this.owner}/${this.repo}#${this.prNumber}](${prUrl})\n\n`;
     markdown += `**Fetched at:** ${new Date().toLocaleString('en-US')}\n\n`;
     
