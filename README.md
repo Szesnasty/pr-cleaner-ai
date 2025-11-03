@@ -172,7 +172,9 @@ apply fixes from PR 2146
 
 **How it works:** Cursor automatically detects PR references and activates the `pr-cleaner-ai` workflow from `.cursor/rules/pr-cleaner-ai.mdc`.
 
-You’ll get something like:
+> **💡 Tip:** If Cursor doesn't activate the rule automatically, you can add `.cursor/rules/pr-cleaner-ai.mdc` to your chat context manually, and make sure you're in **Agent mode** (not Composer mode) for full workflow support.
+
+You'll get something like:
 
 ```txt
 🔎 PR #2146 found (12 comments)
@@ -258,20 +260,15 @@ Options:
 
 We take your repo security seriously:
 
-### GitHub CLI Authentication
-- ✅ Uses GitHub CLI (`gh`) for authentication – **no token management needed!**
-- ✅ GitHub CLI handles all credentials securely
-- ✅ No tokens to store, no tokens to leak
-- ✅ Credentials never stored in your repository
+**What this means:**
+- ✅ **No cloud processing** – runs on your laptop
+- ✅ **No token management** – uses GitHub CLI
+- ✅ **No data collection** – zero telemetry
+- ✅ **Built with security best practices**
 
 ### File Protection
 - ✅ Output folder (`.pr-cleaner-ai-output/`) is gitignored
 - ✅ Cursor rules file (`.cursor/rules/pr-cleaner-ai.mdc`) is gitignored
-
-**Why GitHub CLI is safer:**
-- No tokens to accidentally commit
-- Authentication managed by official GitHub tool
-- Works seamlessly for all team members
 
 ---
 
@@ -343,6 +340,27 @@ When you leave a branch:
 When you come back to that branch:
 - if `pr-cleaner-ai` is still in `node_modules`, the Cursor rule file is automatically recreated
 - if it's not installed anymore, just run `npm install` again
+
+---
+
+### Cursor doesn't activate the rule when I mention a PR number
+
+If `fix PR 123` doesn't trigger the workflow automatically:
+
+1. **Add the rule file to context manually:**
+   - Click `@` in Cursor chat
+   - Select `.cursor/rules/pr-cleaner-ai.mdc`
+   - Then try `fix PR 123` again
+
+2. **Make sure you're in Agent mode:**
+   - Use Cursor's **Agent mode** (not Composer mode) for full workflow support
+   - Agent mode allows multi-step actions and file execution
+
+3. **Verify the rule file exists:**
+   ```bash
+   ls .cursor/rules/pr-cleaner-ai.mdc
+   ```
+   If missing, run `npx pr-cleaner-ai init` again.
 
 ---
 

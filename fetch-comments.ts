@@ -13,7 +13,7 @@
  * - Uses GitHub CLI for authentication (no token management needed!)
  */
 
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -120,11 +120,24 @@ class PRCommentsFetcher {
       console.log('🔍 Looking for PR associated with this branch...');
 
       // Try to find PR for current branch using gh CLI
-      const result = execSync(`gh pr list --state all --head "${currentBranch}" --json number --jq '.[0].number'`, {
+      // Use spawnSync to avoid command injection
+      const result = spawnSync('gh', [
+        'pr', 'list',
+        '--state', 'all',
+        '--head', currentBranch,
+        '--json', 'number',
+        '--jq', '.[0].number'
+      ], {
         encoding: 'utf-8'
-      }).trim();
+      });
 
-      if (!result || result === 'null') {
+      if (result.error) {
+        throw result.error;
+      }
+
+      const output = result.stdout.trim();
+
+      if (!output || output === 'null') {
         console.error(`\n❌ No PR found for branch: ${currentBranch}`);
         console.log('\n💡 Options:');
         console.log('   1. Create a PR for this branch first');
@@ -133,7 +146,7 @@ class PRCommentsFetcher {
         process.exit(1);
       }
 
-      const prNumber = parseInt(result, 10);
+      const prNumber = parseInt(output, 10);
       console.log(`✅ Found PR #${prNumber} for branch "${currentBranch}"`);
       return prNumber;
     } catch (error) {
@@ -151,8 +164,22 @@ class PRCommentsFetcher {
 
   private ghApi(endpoint: string): any {
     try {
-      const result = execSync(`gh api "${endpoint}" --paginate`, { encoding: 'utf-8' });
-      return JSON.parse(result);
+      // Use spawnSync to avoid command injection
+      const result = spawnSync('gh', ['api', endpoint, '--paginate'], {
+        encoding: 'utf-8'
+      });
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      if (result.status !== 0) {
+        const error: any = new Error(result.stderr || 'gh api command failed');
+        error.message = result.stderr;
+        throw error;
+      }
+
+      return JSON.parse(result.stdout);
     } catch (error: any) {
       console.error(`\n❌ Error calling GitHub API: ${endpoint}`);
       
@@ -223,12 +250,27 @@ class PRCommentsFetcher {
 
     try {
       // Try GraphQL API first to get resolved status
-      const result = execSync(
-        `gh api graphql -f query='${graphqlQuery.replace(/'/g, "'\\''")}' -F owner='${this.owner}' -F repo='${this.repo}' -F prNumber=${this.prNumber}`,
-        { encoding: 'utf-8' }
-      );
+      // Use spawnSync to avoid command injection
+      const result = spawnSync('gh', [
+        'api', 'graphql',
+        '-f', `query=${graphqlQuery}`,
+        '-F', `owner=${this.owner}`,
+        '-F', `repo=${this.repo}`,
+        '-F', `prNumber=${this.prNumber}`
+      ], {
+        encoding: 'utf-8'
+      });
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      if (result.status !== 0) {
+        console.log('⚠️ GraphQL API error, falling back to REST API...');
+        throw new Error('GraphQL error');
+      }
       
-      const graphqlData: any = JSON.parse(result);
+      const graphqlData: any = JSON.parse(result.stdout);
       
       if (graphqlData.errors) {
         console.log('⚠️ GraphQL API error, falling back to REST API...');
@@ -559,6 +601,9 @@ class PRCommentsFetcher {
 
   public async fetchAndSave(): Promise<void> {
     try {
+      console.log('\n🔄 Fetching FRESH data from GitHub (no cache)...');
+      console.log(`⏰ Timestamp: ${new Date().toLocaleString('en-US')}\n`);
+      
       const [reviewComments, issueComments] = await Promise.all([
         this.fetchReviewComments(),
         this.fetchIssueComments()
@@ -640,15 +685,22 @@ class PRCommentsFetcher {
 
       // Save markdown
       const markdownPath = path.join(outputDir, `pr-${this.prNumber}-comments.md`);
+      
+      // Check if file exists and notify about overwrite
+      const markdownExists = fs.existsSync(markdownPath);
+      if (markdownExists) {
+        console.log(`\n🔄 Overwriting existing file with fresh data...`);
+      }
+      
       const markdown = this.generateMarkdown(groupedComments, stats);
       fs.writeFileSync(markdownPath, markdown, 'utf-8');
-      console.log(`\n📝 Saved markdown: ${markdownPath}`);
+      console.log(`\n📝 ${markdownExists ? 'Updated' : 'Saved'} markdown: ${markdownPath}`);
 
       // Save JSON
       const jsonPath = path.join(outputDir, `pr-${this.prNumber}-comments.json`);
       const json = this.generateJSON(groupedComments);
       fs.writeFileSync(jsonPath, json, 'utf-8');
-      console.log(`📝 Saved JSON: ${jsonPath}`);
+      console.log(`📝 ${markdownExists ? 'Updated' : 'Saved'} JSON: ${jsonPath}`);
 
       console.log('\n✨ Done! You can now open the files in Cursor.\n');
       console.log(
