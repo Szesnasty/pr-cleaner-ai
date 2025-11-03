@@ -1,6 +1,6 @@
 {
     "name": "pr-cleaner-ai",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "description": "Cursor + GitHub PR cleanup assistant. Local dev tool (install as devDependency).",
     "bin": {
         "pr-cleaner-ai": "dist/index.js"
