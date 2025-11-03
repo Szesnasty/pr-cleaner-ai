@@ -3,18 +3,17 @@
     "version": "1.1.0",
     "description": "Cursor + GitHub PR cleanup assistant. Local dev tool (install as devDependency).",
     "bin": {
-        "pr-cleaner-ai": "bin/pr-cleaner-ai"
+        "pr-cleaner-ai": "dist/index.js"
     },
     "scripts": {
-        "postinstall": "node scripts/postinstall.js"
+        "build": "tsc",
+        "postinstall": "node scripts/postinstall.js",
+        "prepublishOnly": "npm run build"
     },
     "files": [
-        "bin/",
+        "dist/",
         "scripts/",
         "config/",
-        "fetch-comments.ts",
-        "check-requirements.ts",
-        "tsconfig.json",
         "README.md",
         "LICENSE"
     ],
@@ -59,6 +58,7 @@
         }
     },
     "devDependencies": {
-        "@types/node": "^18.19.130"
+        "@types/node": "^18.19.130",
+        "typescript": "^5.0.0"
     }
 }

@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 
-# Build outputs
+# Build outputs (don't commit in development, but include in npm publish)
 dist/
 *.tsbuildinfo
 
