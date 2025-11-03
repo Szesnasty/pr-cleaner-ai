@@ -45,3 +45,6 @@ FINAL_SUMMARY.md
 
 # pr-cleaner-ai - Cursor rules file (auto-generated, don't commit)
 .cursor/rules/pr-cleaner-ai.mdc
+
+# User configuration (user-specific)
+.pr-cleaner-ai.config.json

@@ -1,0 +1,8 @@
+{
+  "autoFix": false,
+  "additionalRules": [
+    ".cursor/rules/coding-standards.mdc",
+    ".cursor/rules/testing-requirements.mdc"
+  ]
+}
+

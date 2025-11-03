@@ -57,12 +57,18 @@ interface GroupedComment {
   }>;
 }
 
+interface Config {
+  autoFix?: boolean;
+  additionalRules?: string[];
+}
+
 class PRCommentsFetcher {
   private owner: string;
   private repo: string;
   private prNumber: number;
   private prTitle: string = '';
   private prAuthor: string = '';
+  private config: Config = {};
 
   constructor() {
     // Check if gh CLI is installed and authenticated
@@ -90,6 +96,7 @@ class PRCommentsFetcher {
     this.owner = match[1];
     this.repo = match[2];
     this.prNumber = this.getCurrentPRNumber();
+    this.config = this.loadConfig();
 
     console.log(`\n📋 Fetching comments for PR #${this.prNumber}`);
     console.log(`📦 Repository: ${this.owner}/${this.repo}`);
@@ -159,6 +166,24 @@ class PRCommentsFetcher {
       console.log('\n🔍 Check all requirements:');
       console.log('   pr-cleaner-ai check');
       process.exit(1);
+    }
+  }
+
+  private loadConfig(): Config {
+    const configPath = path.join(process.cwd(), '.pr-cleaner-ai.config.json');
+    
+    if (!fs.existsSync(configPath)) {
+      return {};
+    }
+
+    try {
+      const configContent = fs.readFileSync(configPath, 'utf-8');
+      const config: Config = JSON.parse(configContent);
+      return config;
+    } catch (error) {
+      console.warn(`⚠️  Failed to load config from ${configPath}: ${(error as Error).message}`);
+      console.warn('   Using default configuration.\n');
+      return {};
     }
   }
 
@@ -584,6 +609,27 @@ class PRCommentsFetcher {
       }
     }
 
+    // Add additional rules information if configured
+    if (this.config.additionalRules && this.config.additionalRules.length > 0) {
+      markdown += `\n---\n\n`;
+      markdown += `## 📚 Additional Team Rules\n\n`;
+      markdown += `When resolving PR comments, please also consider these additional rule files:\n\n`;
+      
+      for (const rulePath of this.config.additionalRules) {
+        const fullPath = path.isAbsolute(rulePath) 
+          ? rulePath 
+          : path.join(process.cwd(), rulePath);
+        
+        if (fs.existsSync(fullPath)) {
+          markdown += `- \`${rulePath}\` (Cursor will read this automatically)\n`;
+        } else {
+          markdown += `- ⚠️ \`${rulePath}\` (file not found - please check the path)\n`;
+        }
+      }
+      
+      markdown += `\n**Note:** Cursor will automatically read these rule files when resolving comments. Make sure to reference them for coding standards, testing requirements, or security guidelines.\n`;
+    }
+
     return markdown;
   }
 
@@ -603,6 +649,23 @@ class PRCommentsFetcher {
     try {
       console.log('\n🔄 Fetching FRESH data from GitHub (no cache)...');
       console.log(`⏰ Timestamp: ${new Date().toLocaleString('en-US')}\n`);
+      
+      // Log additional rules from user's config
+      if (this.config.additionalRules && this.config.additionalRules.length > 0) {
+        console.log('📚 Loading additional rules from your config:');
+        for (const rulePath of this.config.additionalRules) {
+          const fullPath = path.isAbsolute(rulePath) 
+            ? rulePath 
+            : path.join(process.cwd(), rulePath);
+          
+          if (fs.existsSync(fullPath)) {
+            console.log(`   ✅ ${rulePath} (found)`);
+          } else {
+            console.log(`   ⚠️  ${rulePath} (not found - will show warning in output)`);
+          }
+        }
+        console.log('');
+      }
       
       const [reviewComments, issueComments] = await Promise.all([
         this.fetchReviewComments(),

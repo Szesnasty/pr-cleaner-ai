@@ -233,13 +233,18 @@ Create `.pr-cleaner-ai.config.json` if you want to change how fixes are applied:
 
 ```json
 {
-  "autoFix": false
+  "autoFix": false,
+  "additionalRules": [
+    ".cursor/rules/coding-standards.mdc",
+    ".cursor/rules/testing-requirements.mdc"
+  ]
 }
 ```
 
 Options:
 - `autoFix: false` (default) – interactive mode, asks before each patch  
 - `autoFix: true` – hands-free mode, applies all fixes automatically
+- `additionalRules` (optional) – array of rule file paths that Cursor should consider when resolving PR comments. These files will be automatically referenced in the generated markdown output.
 
 ---
 
