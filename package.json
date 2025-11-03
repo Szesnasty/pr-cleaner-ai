@@ -8,7 +8,8 @@
     "scripts": {
         "build": "tsc",
         "postinstall": "node scripts/postinstall.js",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm run build && npm run clean:maps",
+        "clean:maps": "find dist -name '*.map' -delete"
     },
     "files": [
         "dist/",

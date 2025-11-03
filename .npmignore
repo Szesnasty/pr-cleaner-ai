@@ -15,10 +15,16 @@ __tests__/
 *.md
 !README.md
 
+# Note: dist/ is included in package.json "files" array, so it's published
+# but .map files are excluded above
+
 # Output files
 output/
-dist/
 .pr-cleaner-ai-output/
+
+# Source maps (not needed in production)
+*.map
+dist/**/*.map
 
 # IDE files
 .vscode/
