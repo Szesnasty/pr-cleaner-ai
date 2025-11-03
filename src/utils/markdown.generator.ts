@@ -52,7 +52,7 @@ export class MarkdownGenerator {
     markdown += `---\n\n`;
     
     // Important note for Cursor AI
-    markdown += `> ⚠️  **IMPORTANT FOR CURSOR AI:** Work only with **UNRESOLVED** comments (marked with ⏳). Resolved comments (✅) are shown for reference only.\n\n`;
+    markdown += `> ⚠️  **IMPORTANT FOR CURSOR AI:** Work only with **UNRESOLVED** comments (marked with ⏳). Resolved comments (✅) are counted in statistics above but not shown in detail to reduce context size.\n\n`;
     markdown += `---\n\n`;
 
     // QUICK START PROMPT - for quick use
@@ -65,7 +65,7 @@ export class MarkdownGenerator {
     markdown += `2. Find the appropriate line/section\n`;
     markdown += `3. Propose and implement a specific change\n`;
     markdown += `4. Explain what you did and why\n\n`;
-    markdown += `⚠️  IMPORTANT: Only work with UNRESOLVED comments (⏳). Ignore resolved comments (✅) - they are shown for reference only.\n\n`;
+    markdown += `⚠️  IMPORTANT: Only work with UNRESOLVED comments (⏳). Resolved comments are counted in statistics but not shown in detail.\n\n`;
     markdown += `Start with the first unresolved comment and go through all of them sequentially.\n`;
     markdown += `\`\`\`\n\n`;
     markdown += `---\n\n`;
@@ -77,7 +77,7 @@ export class MarkdownGenerator {
 
     markdown += `### 📋 Task:\n\n`;
     markdown += `1. **Analyze all ${stats.unresolved} UNRESOLVED comments** below (marked with ⏳)\n`;
-    markdown += `2. **Ignore RESOLVED comments** (marked with ✅) - they are shown for reference only\n`;
+    markdown += `2. **RESOLVED comments** (${stats.resolved} total) are counted in statistics but not shown - they're already done ✅\n`;
     markdown += `3. **For each UNRESOLVED comment:**\n`;
     markdown += `   - Open the appropriate file in the project\n`;
     markdown += `   - Find the specified line/section of code\n`;
@@ -109,7 +109,8 @@ export class MarkdownGenerator {
       for (const group of generalComments) {
         for (const comment of group.comments) {
           // Issue comments are always unresolved (resolved field is false)
-          const statusIcon = comment.resolved ? '✅ **RESOLVED**' : '⏳ **UNRESOLVED**';
+          // All comments shown here are unresolved (resolved ones are filtered out)
+          const statusIcon = '⏳ **UNRESOLVED**';
           markdown += `${statusIcon}  \n`;
           markdown += `### 👤 ${comment.author}\n\n`;
           markdown += `**Date:** ${new Date(comment.created_at).toLocaleString('en-US')}\n\n`;
@@ -149,8 +150,9 @@ export class MarkdownGenerator {
           }
 
           for (const comment of group.comments) {
-            // Add status icon
-            const statusIcon = comment.resolved ? '✅ **RESOLVED**' : '⏳ **UNRESOLVED**';
+            // All comments shown here are unresolved (resolved ones are filtered out in grouping)
+            // Add status icon - all are unresolved
+            const statusIcon = '⏳ **UNRESOLVED**';
             
             if (comment.diff_hunk) {
               markdown += `**Code context:**\n\`\`\`diff\n${comment.diff_hunk}\n\`\`\`\n\n`;
@@ -172,28 +174,20 @@ export class MarkdownGenerator {
 
     for (const group of fileComments) {
       for (const comment of group.comments) {
-        // Only include unresolved comments in checklist
-        if (!comment.resolved) {
-          const lineInfo = group.line ? ` (line ${group.line})` : '';
-          markdown += `- [ ] ⏳ \`${group.file}\`${lineInfo} - @${comment.author}\n`;
-        }
+        // All comments in groupedComments are unresolved (resolved ones are filtered out)
+        const lineInfo = group.line ? ` (line ${group.line})` : '';
+        markdown += `- [ ] ⏳ \`${group.file}\`${lineInfo} - @${comment.author}\n`;
       }
     }
     
-    // Show resolved comments separately (for reference)
-    const resolvedCommentsInFiles = fileComments.flatMap(g => 
-      g.comments.filter(c => c.resolved).map(c => ({ group: g, comment: c }))
-    );
-    
-    if (resolvedCommentsInFiles.length > 0) {
+    // OPTIMIZATION: Resolved comments are not shown (only counted in statistics)
+    // This reduces context size for Cursor - resolved comments don't need to be worked on anyway
+    if (stats.resolved > 0) {
       markdown += `\n---\n\n`;
-      markdown += `## ✅ Resolved Comments (Reference Only)\n\n`;
-      markdown += `<!-- These comments are already resolved - no action needed -->\n\n`;
-      
-      for (const { group, comment } of resolvedCommentsInFiles) {
-        const lineInfo = group.line ? ` (line ${group.line})` : '';
-        markdown += `- [x] ✅ \`${group.file}\`${lineInfo} - @${comment.author}\n`;
-      }
+      markdown += `## ℹ️  Resolved Comments\n\n`;
+      markdown += `**${stats.resolved} comment(s) are already resolved** ✅\n\n`;
+      markdown += `These are not shown to keep the context focused on work that needs to be done. `;
+      markdown += `You can see them on GitHub: [PR #${this.prNumber}](${prUrl})\n`;
     }
 
     // Add additional rules information if configured

@@ -17,13 +17,19 @@ export class GroupingUtil {
   } {
     const grouped = new Map<string, GroupedComment>();
     
-    // Count statistics
+    // Count statistics (BEFORE filtering - we need to count all comments)
     const resolvedCount = reviewComments.filter((c) => c.resolved === true).length;
     const unresolvedCount = reviewComments.filter((c) => c.resolved !== true).length;
     const totalCount = reviewComments.length;
 
-    // Group ALL review comments (both resolved and unresolved)
+    // OPTIMIZATION: Group ONLY unresolved review comments (resolved ones are counted but not included)
+    // This reduces context size for Cursor and makes output files smaller
     for (const comment of reviewComments) {
+      // Skip resolved comments - we only count them for statistics
+      if (comment.resolved === true) {
+        continue;
+      }
+
       const key = `${comment.path || 'general'}:${comment.line || 0}`;
 
       if (!grouped.has(key)) {
