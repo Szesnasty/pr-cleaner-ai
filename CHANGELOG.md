@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.11](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.10...v1.2.11) (2025-11-04)
+
+
+### Miscellaneous Chores
+
+* sync Release Please manifest with published version 1.2.10 ([069f168](https://github.com/Szesnasty/pr-cleaner-ai/commit/069f168325c73b2a12d72676187f9c0bece46a29))
+
 ## [1.2.10](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.9...v1.2.10) (2025-11-04)
 
 
