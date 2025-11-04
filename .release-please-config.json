@@ -1,0 +1,36 @@
+{
+  "name": "pr-cleaner-ai",
+  "version": "1.2.4",
+  "repository": "https://github.com/Szesnasty/pr-cleaner-ai.git",
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "pr-cleaner-ai",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": false,
+      "bump-patch-for-minor-pre-major": true,
+      "versioning": "default",
+      "extra-files": [
+        "package.json",
+        "package-lock.json"
+      ]
+    }
+  },
+  "changelog-sections": [
+    {"type": "feat", "section": "Features", "hidden": false},
+    {"type": "fix", "section": "Bug Fixes", "hidden": false},
+    {"type": "perf", "section": "Performance Improvements", "hidden": false},
+    {"type": "revert", "section": "Reverts", "hidden": false},
+    {"type": "docs", "section": "Documentation", "hidden": false},
+    {"type": "style", "section": "Styles", "hidden": true},
+    {"type": "chore", "section": "Miscellaneous Chores", "hidden": false},
+    {"type": "refactor", "section": "Code Refactoring", "hidden": false},
+    {"type": "test", "section": "Tests", "hidden": true},
+    {"type": "build", "section": "Build System", "hidden": true},
+    {"type": "ci", "section": "Continuous Integration", "hidden": true},
+    {"type": "security", "section": "Security", "hidden": false}
+  ]
+}
+
