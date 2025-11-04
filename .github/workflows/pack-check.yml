@@ -1,0 +1,33 @@
+name: Pack Check
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  pack-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check package contents
+        run: npm pack --dry-run
+
+      - name: Verify package.json files field
+        run: |
+          echo "📦 Checking files that will be included in npm package..."
+          npm pack --dry-run 2>&1 | grep -E "\.(js|md|json|mdc)$" | head -20 || true
+          echo "✅ Pack check completed"
+

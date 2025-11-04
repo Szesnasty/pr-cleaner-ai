@@ -3,8 +3,11 @@
 [![npm](https://img.shields.io/npm/v/pr-cleaner-ai.svg)](https://www.npmjs.com/package/pr-cleaner-ai)
 [![downloads](https://img.shields.io/npm/dw/pr-cleaner-ai.svg)](https://www.npmjs.com/package/pr-cleaner-ai)
 [![license](https://img.shields.io/badge/license-MIT-informational.svg)](LICENSE)
+[![Node.js Version](https://img.shields.io/node/v/pr-cleaner-ai)](https://nodejs.org)
+[![Package Health](https://snyk.io/advisor/npm-package/pr-cleaner-ai/badge.svg)](https://snyk.io/advisor/npm-package/pr-cleaner-ai)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Szesnasty/pr-cleaner-ai/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Szesnasty/pr-cleaner-ai)
 [![CodeQL](https://github.com/Szesnasty/pr-cleaner-ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/Szesnasty/pr-cleaner-ai/actions/workflows/codeql.yml)
+[![Security Audit](https://img.shields.io/badge/security-audited-green.svg)](SECURITY_AUDIT_REPORT.md)
 
 Clean up your pull request in one command — directly in Cursor.
 

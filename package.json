@@ -1,6 +1,6 @@
 {
     "name": "pr-cleaner-ai",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "Cursor + GitHub PR cleanup assistant. Local dev tool (install as devDependency).",
     "bin": {
         "pr-cleaner-ai": "dist/index.js"
@@ -17,21 +17,36 @@
         "scripts/",
         "config/pr-cleaner-ai.mdc",
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "CHANGELOG.md",
+        "SECURITY.md",
+        "CODE_OF_CONDUCT.md",
+        "CONTRIBUTING.md"
     ],
     "keywords": [
         "cursor",
+        "cursor-ai",
         "github-cli",
+        "gh-cli",
         "pull-request",
         "github-pr",
+        "pr-comments",
         "code-review",
         "review-comments",
+        "code-review-automation",
         "automation",
         "developer-tools",
         "developer-productivity",
-        "merge-ready"
+        "devtool",
+        "merge-ready",
+        "pr-cleanup",
+        "github-integration"
     ],
-    "author": "lukasz.jakubowski1993@gmail.com",
+    "author": {
+        "name": "Łukasz Jakubowski",
+        "email": "lukasz.jakubowski1993@gmail.com",
+        "url": "https://github.com/Szesnasty"
+    },
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -41,6 +56,10 @@
         "url": "https://github.com/Szesnasty/pr-cleaner-ai/issues"
     },
     "homepage": "https://github.com/Szesnasty/pr-cleaner-ai#readme",
+    "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/Szesnasty"
+    },
     "engines": {
         "node": ">=16"
     },
