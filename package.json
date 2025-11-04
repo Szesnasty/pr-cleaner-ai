@@ -14,6 +14,7 @@
     "files": [
         "bin/",
         "dist/",
+        "scripts/",
         "config/pr-cleaner-ai.mdc",
         "README.md",
         "LICENSE"
