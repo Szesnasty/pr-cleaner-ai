@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.7](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.6...v1.2.7) (2025-11-04)
+
+
+### Bug Fixes
+
+* **security:** pin all GitHub Actions versions and improve permissions ([d625320](https://github.com/Szesnasty/pr-cleaner-ai/commit/d625320f51c8523bcc9377f47ed9fd94286b146d))
+
+
+### Documentation
+
+* add Branch Protection setup guide ([d9367d6](https://github.com/Szesnasty/pr-cleaner-ai/commit/d9367d64f8955e76bed8bcb0729a07a05e7c9b23))
+
 ## [1.2.6](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.5...v1.2.6) (2025-11-04)
 
 
