@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.9](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.8...v1.2.9) (2025-11-04)
+
+
+### Bug Fixes
+
+* **security:** move security-events write permission to job-level ([3caffc7](https://github.com/Szesnasty/pr-cleaner-ai/commit/3caffc73c3a33b68b39af68a3c8d7b1333be79d7))
+
 ## [1.2.8](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.7...v1.2.8) (2025-11-04)
 
 
