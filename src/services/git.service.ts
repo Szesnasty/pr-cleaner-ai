@@ -25,6 +25,13 @@ export class GitService {
    * Parse GitHub URL to extract owner and repo
    */
   static parseGitHubUrl(remoteUrl: string): { owner: string; repo: string } {
+    // Security: Basic URL validation
+    if (!remoteUrl || typeof remoteUrl !== 'string') {
+      console.error('❌ Invalid remote URL');
+      process.exit(1);
+      throw new Error('Invalid remote URL');
+    }
+
     const match = remoteUrl.match(/github\.com[:/](.+?)\/(.+?)(\.git)?$/);
 
     if (!match || !match[1] || !match[2]) {
@@ -34,9 +41,19 @@ export class GitService {
       throw new Error('Cannot parse GitHub repository URL');
     }
 
+    const owner = match[1].trim();
+    const repo = match[2].trim();
+
+    // Security: Validate parsed owner/repo format
+    if (!/^[a-zA-Z0-9._-]+$/.test(owner) || !/^[a-zA-Z0-9._-]+$/.test(repo)) {
+      console.error('❌ Invalid owner or repo format in URL');
+      process.exit(1);
+      throw new Error('Invalid owner or repo format');
+    }
+
     return { 
-      owner: match[1], 
-      repo: match[2] 
+      owner, 
+      repo 
     };
   }
 

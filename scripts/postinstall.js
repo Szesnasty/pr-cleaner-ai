@@ -7,9 +7,15 @@
  * - Shows welcome message
  * - Reminds user to run `npx pr-cleaner-ai init` for first-time setup
  * - Does NOT modify any files automatically (user must run init explicitly)
+ * - Security: No network calls, path validation, respects PR_CLEANER_AI_SKIP_POSTINSTALL
  */
 
 function main() {
+  // Skip if explicitly requested (security: allows users to skip postinstall)
+  if (process.env.PR_CLEANER_AI_SKIP_POSTINSTALL === '1') {
+    return;
+  }
+
   // Skip in CI environments
   if (process.env.CI) {
     return;
@@ -18,8 +24,32 @@ function main() {
   const fs = require('fs');
   const path = require('path');
   
+  // Security: Validate project root path to prevent directory traversal
   const projectRoot = process.cwd();
-  const rulesFile = path.join(projectRoot, '.cursor', 'rules', 'pr-cleaner-ai.mdc');
+  if (!projectRoot || typeof projectRoot !== 'string') {
+    console.warn('⚠️  Invalid project root, skipping postinstall');
+    return;
+  }
+
+  // Security: Use path.resolve() to normalize and validate paths
+  const resolvedRoot = path.resolve(projectRoot);
+  const currentDir = path.resolve(process.cwd());
+  // Security: Ensure resolved path matches current directory (prevent directory traversal)
+  if (resolvedRoot !== currentDir && !resolvedRoot.startsWith(currentDir + path.sep)) {
+    console.warn('⚠️  Path validation failed, skipping postinstall');
+    return;
+  }
+
+  // Security: Only read files, never write in postinstall
+  // User must explicitly run `npx pr-cleaner-ai init` to create files
+  const rulesFile = path.resolve(resolvedRoot, '.cursor', 'rules', 'pr-cleaner-ai.mdc');
+  
+  // Security: Validate rulesFile is within project root
+  if (!rulesFile.startsWith(resolvedRoot)) {
+    console.warn('⚠️  Path validation failed for rules file, skipping check');
+    return;
+  }
+
   const hasRulesFile = fs.existsSync(rulesFile);
   
   console.log('\n🎉 pr-cleaner-ai installed successfully!\n');

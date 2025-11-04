@@ -53,7 +53,18 @@ export class CommentsService {
     `;
 
     try {
+      // Security: Validate metadata before API calls
+      if (!this.metadata.owner || !this.metadata.repo || !this.metadata.prNumber) {
+        throw new Error('Invalid metadata: owner, repo, and prNumber are required');
+      }
+      
+      // Security: Validate owner/repo format (basic sanitization)
+      if (!/^[a-zA-Z0-9._-]+$/.test(this.metadata.owner) || !/^[a-zA-Z0-9._-]+$/.test(this.metadata.repo)) {
+        throw new Error('Invalid owner or repo format');
+      }
+      
       // Try GraphQL API first to get resolved status
+      // Security: Use array arguments with spawnSync to prevent injection
       const result = spawnSync('gh', [
         'api', 'graphql',
         '-f', `query=${graphqlQuery}`,
@@ -125,9 +136,13 @@ export class CommentsService {
       // Fallback to REST API (without resolved status)
       console.log('⚠️ Using REST API (resolved status will be unavailable)...');
       
+      // Security: Build endpoint safely (owner/repo already validated)
+      const prEndpoint = `/repos/${this.metadata.owner}/${this.metadata.repo}/pulls/${this.metadata.prNumber}`;
+      
       // Try to fetch PR info from REST API as fallback
       try {
-        const result = spawnSync('gh', ['api', `/repos/${this.metadata.owner}/${this.metadata.repo}/pulls/${this.metadata.prNumber}`, '--paginate'], {
+        // Security: Use spawnSync with validated endpoint
+        const result = spawnSync('gh', ['api', prEndpoint, '--paginate'], {
           encoding: 'utf-8'
         });
         if (result.status === 0) {
@@ -141,7 +156,10 @@ export class CommentsService {
         // If we can't get PR info, that's OK - we'll just not show it
       }
       
-      const result = spawnSync('gh', ['api', `/repos/${this.metadata.owner}/${this.metadata.repo}/pulls/${this.metadata.prNumber}/comments`, '--paginate'], {
+      // Security: Build comments endpoint safely
+      const commentsEndpoint = `/repos/${this.metadata.owner}/${this.metadata.repo}/pulls/${this.metadata.prNumber}/comments`;
+      
+      const result = spawnSync('gh', ['api', commentsEndpoint, '--paginate'], {
         encoding: 'utf-8'
       });
       
@@ -156,7 +174,16 @@ export class CommentsService {
 
   async fetchIssueComments(): Promise<IssueComment[]> {
     console.log('💬 Fetching issue comments...');
-    const result = spawnSync('gh', ['api', `/repos/${this.metadata.owner}/${this.metadata.repo}/issues/${this.metadata.prNumber}/comments`, '--paginate'], {
+    
+    // Security: Validate metadata
+    if (!this.metadata.owner || !this.metadata.repo || !this.metadata.prNumber) {
+      throw new Error('Invalid metadata: owner, repo, and prNumber are required');
+    }
+    
+    // Security: Build endpoint safely
+    const issueCommentsEndpoint = `/repos/${this.metadata.owner}/${this.metadata.repo}/issues/${this.metadata.prNumber}/comments`;
+    
+    const result = spawnSync('gh', ['api', issueCommentsEndpoint, '--paginate'], {
       encoding: 'utf-8'
     });
     

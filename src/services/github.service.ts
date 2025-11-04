@@ -24,11 +24,23 @@ export class GitHubService {
 
   /**
    * Call GitHub API using gh CLI
+   * Supports GitHub Enterprise via --hostname flag
    */
-  static callApi(endpoint: string, owner: string, repo: string, prNumber: number): any {
+  static callApi(endpoint: string, owner: string, repo: string, prNumber: number, hostname?: string): any {
     try {
+      // Security: Build command arguments as array (no string concatenation)
+      const args: string[] = ['api', endpoint, '--paginate'];
+      
+      // Security: Support GitHub Enterprise Server via --hostname
+      if (hostname && typeof hostname === 'string' && hostname.length > 0) {
+        // Security: Basic hostname validation (no protocol, no path)
+        if (!hostname.includes('://') && !hostname.includes('/') && !hostname.includes(' ')) {
+          args.push('--hostname', hostname);
+        }
+      }
+      
       // Use spawnSync to avoid command injection
-      const result = spawnSync('gh', ['api', endpoint, '--paginate'], {
+      const result = spawnSync('gh', args, {
         encoding: 'utf-8'
       });
 
@@ -77,7 +89,26 @@ export class GitHubService {
     const prArg = process.argv.find((arg) => arg.startsWith('--pr='));
 
     if (prArg) {
-      return parseInt(prArg.split('=')[1], 10);
+      const prValue = prArg.split('=')[1];
+      
+      // Security: Validate PR number format (only digits)
+      if (!prValue || !/^\d+$/.test(prValue)) {
+        console.error('\n❌ Invalid PR number format');
+        console.log('\n💡 PR number must be a positive integer');
+        console.log('   Example: pr-cleaner-ai fetch --pr=123\n');
+        process.exit(1);
+      }
+
+      const prNumber = parseInt(prValue, 10);
+      
+      // Security: Validate parsed number is positive and within reasonable range
+      if (isNaN(prNumber) || prNumber <= 0 || prNumber > 999999) {
+        console.error('\n❌ Invalid PR number');
+        console.log('\n💡 PR number must be between 1 and 999999');
+        process.exit(1);
+      }
+
+      return prNumber;
     }
 
     // Auto-detect PR from current branch
@@ -86,8 +117,14 @@ export class GitHubService {
       console.log(`\n🌿 Current branch: ${currentBranch}`);
       console.log('🔍 Looking for PR associated with this branch...');
 
+      // Security: Validate branch name (basic sanitization)
+      if (!currentBranch || typeof currentBranch !== 'string' || currentBranch.length > 255) {
+        throw new Error('Invalid branch name');
+      }
+
       // Try to find PR for current branch using gh CLI
-      // Use spawnSync to avoid command injection
+      // Security: Use spawnSync with array arguments to avoid command injection
+      // Security: Branch name is validated above, used directly in array (safe)
       const result = spawnSync('gh', [
         'pr', 'list',
         '--state', 'all',
@@ -114,6 +151,15 @@ export class GitHubService {
       }
 
       const prNumber = parseInt(output, 10);
+      
+      // Security: Validate parsed PR number
+      if (isNaN(prNumber) || prNumber <= 0 || prNumber > 999999) {
+        console.error(`\n❌ Invalid PR number from branch detection: ${output}`);
+        console.log('\n💡 Please specify PR number manually:');
+        console.log('   pr-cleaner-ai fetch --pr=123');
+        process.exit(1);
+      }
+      
       console.log(`✅ Found PR #${prNumber} for branch "${currentBranch}"`);
       return prNumber;
     } catch (error) {

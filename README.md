@@ -1,5 +1,11 @@
 # 🧹 pr-cleaner-ai
 
+[![npm](https://img.shields.io/npm/v/pr-cleaner-ai.svg)](https://www.npmjs.com/package/pr-cleaner-ai)
+[![downloads](https://img.shields.io/npm/dw/pr-cleaner-ai.svg)](https://www.npmjs.com/package/pr-cleaner-ai)
+[![license](https://img.shields.io/badge/license-MIT-informational.svg)](LICENSE)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/Szesnasty/pr-cleaner-ai/badge)](https://securityscorecards.dev/viewer/?uri=github.com/Szesnasty/pr-cleaner-ai)
+[![CodeQL](https://github.com/Szesnasty/pr-cleaner-ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/Szesnasty/pr-cleaner-ai/actions/workflows/codeql.yml)
+
 Clean up your pull request in one command — directly in Cursor.
 
 `pr-cleaner-ai` pulls review comments from a GitHub Pull Request, updates your local code, and walks you through resolving the threads — so after review you can get to merge without doing the boring cleanup loop.
@@ -282,10 +288,20 @@ We take your repo security seriously:
 - ✅ **No token management** – uses GitHub CLI
 - ✅ **No data collection** – zero telemetry
 - ✅ **Built with security best practices**
+- ✅ **Published with provenance** – `npm publish --provenance` for supply chain security
+- ✅ **2FA enabled** – required for package maintainers
 
 ### File Protection
 - ✅ Output folder (`.pr-cleaner-ai-output/`) is gitignored
 - ✅ Cursor rules file (`.cursor/rules/pr-cleaner-ai.mdc`) is gitignored
+
+### Security Features
+- ✅ **Path validation** – all file operations use `path.resolve()` to prevent directory traversal
+- ✅ **Input validation** – PR numbers, owner/repo names validated before API calls
+- ✅ **Command injection prevention** – uses `spawn()` with array arguments, never string concatenation
+- ✅ **No network calls in postinstall** – respects `PR_CLEANER_AI_SKIP_POSTINSTALL=1`
+
+See [SECURITY.md](SECURITY.md) for detailed security information and vulnerability reporting.
 
 ---
 

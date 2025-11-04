@@ -1,0 +1,53 @@
+name: OpenSSF Scorecard
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run weekly on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+
+jobs:
+  scorecard:
+    name: OpenSSF Scorecard
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Run OpenSSF Scorecard
+        uses: ossf/scorecard-action@v2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+          # Enable additional checks for better security score
+          checks: >-
+            Branch-Protection,
+            Code-Review,
+            Contributors,
+            Dependency-Update-Tool,
+            License,
+            Maintained,
+            Pinned-Dependencies,
+            Security-Policy,
+            Signed-Releases,
+            Token-Permissions,
+            Vulnerabilities
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: results.sarif
+

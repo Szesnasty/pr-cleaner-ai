@@ -12,27 +12,23 @@
         "clean:maps": "find dist -name '*.map' -delete"
     },
     "files": [
+        "bin/",
         "dist/",
-        "scripts/",
-        "config/",
+        "config/pr-cleaner-ai.mdc",
         "README.md",
         "LICENSE"
     ],
     "keywords": [
-        "github",
-        "pr",
-        "pull-request",
-        "comments",
         "cursor",
-        "ai",
-        "code-review",
-        "automation",
-        "pr-comments",
+        "github-cli",
+        "pull-request",
         "github-pr",
-        "code-review-tool",
-        "fix-pr",
-        "pr-fix",
-        "ai-code-review"
+        "code-review",
+        "review-comments",
+        "automation",
+        "developer-tools",
+        "developer-productivity",
+        "merge-ready"
     ],
     "author": "lukasz.jakubowski1993@gmail.com",
     "license": "MIT",
@@ -45,8 +41,9 @@
     },
     "homepage": "https://github.com/Szesnasty/pr-cleaner-ai#readme",
     "engines": {
-        "node": ">=16.0.0"
+        "node": ">=16"
     },
+    "sideEffects": false,
     "dependencies": {
         "tsx": "^4.7.0"
     },
@@ -61,5 +58,8 @@
     "devDependencies": {
         "@types/node": "^18.19.130",
         "typescript": "^5.0.0"
+    },
+    "publishConfig": {
+        "provenance": true
     }
 }
