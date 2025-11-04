@@ -1,6 +1,6 @@
 {
   "name": "pr-cleaner-ai",
-  "version": "1.2.4",
+  "version": "1.2.10",
   "repository": "https://github.com/Szesnasty/pr-cleaner-ai.git",
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
   "release-type": "node",
