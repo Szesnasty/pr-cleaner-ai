@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.8](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.7...v1.2.8) (2025-11-04)
+
+
+### Bug Fixes
+
+* **security:** add top-level permissions to all workflows ([5bb806f](https://github.com/Szesnasty/pr-cleaner-ai/commit/5bb806f1a91254a3eb3cfafe2791e1e09cfc301c))
+
 ## [1.2.7](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.6...v1.2.7) (2025-11-04)
 
 
