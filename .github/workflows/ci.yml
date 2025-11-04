@@ -58,7 +58,8 @@ jobs:
           node -e "
             const f = require('./pack.json');
             const files = f[0].files.map(x => x.path);
-            const forbidden = files.filter(p => /\.ts$|^src\/|^tests?\//.test(p));
+            // Allow .d.ts files (TypeScript definitions), but not .ts source files
+            const forbidden = files.filter(p => /\.ts$/.test(p) && !/\.d\.ts$/.test(p) || /^src\/|^tests?\//.test(p));
             if (forbidden.length > 0) {
               console.error('❌ Forbidden files in tarball:', forbidden);
               process.exit(1);
