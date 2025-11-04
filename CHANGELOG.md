@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.5](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.4...v1.2.5) (2025-11-04)
+
+
+### Bug Fixes
+
+* add clean:maps step to CI and fix Release Please permissions ([f5efc7c](https://github.com/Szesnasty/pr-cleaner-ai/commit/f5efc7ccbc827b6445c19d80b1a8c71f7a3b00f5))
+* allow .d.ts files in tarball and use config file for Release Please ([b4a698e](https://github.com/Szesnasty/pr-cleaner-ai/commit/b4a698e2775031342c43e3e75a4dc9245bc5456e))
+* disable component in tag name for Release Please ([69b10ff](https://github.com/Szesnasty/pr-cleaner-ai/commit/69b10ffd121392389c46c3aeafb6616c9b888f4c))
+* update OpenSSF Scorecard action version to v2.3.1 ([1ade4b4](https://github.com/Szesnasty/pr-cleaner-ai/commit/1ade4b48cc5b01b13264ab3283512084ca5f6e6b))
+* update release-please manifest format ([021bf24](https://github.com/Szesnasty/pr-cleaner-ai/commit/021bf2416966788664328c7beb7cc67cf1a4e160))
+* use googleapis/release-please-action instead of deprecated google-github-actions ([e6b0120](https://github.com/Szesnasty/pr-cleaner-ai/commit/e6b01208cdca09caef040dedff851ccaeccc8adf))
+
+
+### Miscellaneous Chores
+
+* trigger Release Please after permissions update ([09ed010](https://github.com/Szesnasty/pr-cleaner-ai/commit/09ed0103c4396b3dbd7a83fbe11fc9f0dbdcb7dc))
+
 ## [1.2.4](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.3...v1.2.4) (2025-11-04)
 
 ### 🔧 Maintenance & Infrastructure
@@ -70,4 +87,3 @@
 * Security-first design (no token management)
 * Support for GitHub.com and GitHub Enterprise
 * Comprehensive documentation
-
