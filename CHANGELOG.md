@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.5...v1.2.6) (2025-11-04)
+
+
+### Miscellaneous Chores
+
+* **deps:** update dependencies to latest versions ([3d93bf9](https://github.com/Szesnasty/pr-cleaner-ai/commit/3d93bf991c2e0f1abecc466cc3c7d8f4ea258386))
+
 ## [1.2.5](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.4...v1.2.5) (2025-11-04)
 
 
