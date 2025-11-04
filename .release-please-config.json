@@ -12,6 +12,7 @@
       "bump-minor-pre-major": false,
       "bump-patch-for-minor-pre-major": true,
       "versioning": "default",
+      "include-component-in-tag": false,
       "extra-files": [
         "package.json",
         "package-lock.json"
