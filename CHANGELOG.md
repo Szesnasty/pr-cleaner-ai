@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.12](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.11...v1.2.12) (2025-11-05)
+
+
+### Bug Fixes
+
+* add config file to .gitignore automatically in init script ([4c8d824](https://github.com/Szesnasty/pr-cleaner-ai/commit/4c8d824163deb8d41cc4335ababe2d6629ecff1c))
+
 ## [1.2.11](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.10...v1.2.11) (2025-11-04)
 
 
