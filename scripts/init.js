@@ -107,6 +107,27 @@ function ensureGitignore() {
       fs.writeFileSync(gitignorePath, gitignoreContent);
       console.log(`✅ Added ${cursorRulesFile} to .gitignore`);
     }
+    
+    // Re-read gitignore content after potential update
+    gitignoreContent = fs.readFileSync(gitignorePath, 'utf-8');
+    
+    // Add .pr-cleaner-ai.config.json to .gitignore (user-specific config file)
+    const configFile = '.pr-cleaner-ai.config.json';
+    const hasConfigFile = gitignoreContent.split('\n').some(line => {
+      const trimmed = line.trim();
+      return trimmed === configFile || 
+             trimmed === '.pr-cleaner-ai.config.json';
+    });
+
+    if (!hasConfigFile) {
+      if (gitignoreContent && !gitignoreContent.endsWith('\n')) {
+        gitignoreContent += '\n';
+      }
+      gitignoreContent += `\n# pr-cleaner-ai - User configuration (user-specific)\n`;
+      gitignoreContent += `${configFile}\n`;
+      fs.writeFileSync(gitignorePath, gitignoreContent);
+      console.log(`✅ Added ${configFile} to .gitignore`);
+    }
   } catch {
     // Not a git repo - that's OK
   }
