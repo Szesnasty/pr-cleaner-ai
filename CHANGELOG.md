@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.12...v1.3.0) (2025-11-05)
+
+
+### Features
+
+* **security:** enhance pr-cleaner-ai rules with comprehensive security hardening ([2019b2d](https://github.com/Szesnasty/pr-cleaner-ai/commit/2019b2de3f9c6ed285c14692b9640cea861dfcbc))
+
 ## [1.2.12](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.11...v1.2.12) (2025-11-05)
 
 
