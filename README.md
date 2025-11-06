@@ -365,6 +365,332 @@ MIT
 
 ---
 
+## 📚 Practical Examples
+
+### Example 1: Monorepo with Multiple Packages
+
+**Scenario:** You have a monorepo with packages in `packages/api`, `packages/web`, and `packages/shared`.
+
+**Usage:**
+```txt
+fix PR 456
+```
+
+**What happens:**
+```txt
+🔎 PR #456 found (8 comments)
+📂 Affected files:
+ - packages/api/src/handlers/user.ts (3)
+ - packages/web/components/UserProfile.tsx (2)
+ - packages/shared/types/user.ts (3)
+
+⚙ Mode: interactive (autoFix: false)
+
+packages/api/src/handlers/user.ts:28
+Reviewer: "Add input validation for email field"
+→ Apply this change? [y]
+
+packages/shared/types/user.ts:12
+Reviewer: "Export UserRole enum for reuse"
+→ Apply this change? [y]
+```
+
+**Result:** `pr-cleaner-ai` handles all packages seamlessly, no matter how your monorepo is structured.
+
+---
+
+### Example 2: Handling Different Comment Types
+
+**Scenario:** Your PR has various types of review comments.
+
+**Style/Nitpick Comments:**
+```txt
+PR comment: "rename getUserData → fetchUserData"
+```
+→ `pr-cleaner-ai` applies simple refactoring
+
+**Logic/Bug Comments:**
+```txt
+PR comment: "This will fail if user.email is null. Add null check"
+```
+→ `pr-cleaner-ai` suggests defensive code:
+```typescript
+if (!user.email) {
+  throw new Error('User email is required');
+}
+```
+
+**Test Request Comments:**
+```txt
+PR comment: "Add test case for empty input"
+```
+→ `pr-cleaner-ai` generates test scaffolding based on your existing test patterns
+
+---
+
+### Example 3: Single Package Project
+
+**Scenario:** Standard Node.js project with flat `src/` structure.
+
+```bash
+my-project/
+├── src/
+│   ├── index.ts
+│   ├── utils.ts
+│   └── config.ts
+└── tests/
+    └── utils.test.ts
+```
+
+**Usage in Cursor:**
+```txt
+resolve PR comments for 789
+```
+
+**Result:**
+```txt
+🔎 PR #789 found (4 comments)
+
+src/utils.ts:45
+Reviewer: "Use optional chaining here"
+Current: obj.prop.nested
+Suggested: obj?.prop?.nested
+→ Apply? [y]
+
+tests/utils.test.ts:23
+Reviewer: "Add edge case test for undefined input"
+→ Generate test? [y]
+```
+
+---
+
+### Example 4: Cross-Repository References
+
+**Scenario:** Working on a fork or PR from another repository.
+
+```bash
+# When working on a fork
+npx pr-cleaner-ai fetch --pr=123
+
+# pr-cleaner-ai automatically detects:
+# - The upstream repository
+# - The target branch
+# - Related issue references
+```
+
+---
+
+### Example 5: Batch Comment Resolution
+
+**Scenario:** 20+ review comments on a large feature PR.
+
+**With `commitBatch` configured:**
+```json
+{
+  "commitBatch": {
+    "threshold": {
+      "comments": 5
+    }
+  }
+}
+```
+
+**What happens:**
+```txt
+🔎 PR #2000 found (22 comments)
+
+✅ Fixed 5 comments in:
+ - src/auth/login.ts (2)
+ - src/api/routes.ts (3)
+
+💡 Suggested commit message:
+"fix(auth,api): address review comments on validation and error handling"
+
+⏸️  Commit now before continuing? [y/n]
+
+📊 Progress: 5/22 comments resolved (17 remaining)
+```
+
+This prevents huge commits and makes your git history cleaner.
+
+---
+
+## 🔧 Troubleshooting
+
+### Issue: `gh: command not found`
+
+**Problem:** GitHub CLI is not installed or not in PATH.
+
+**Solutions:**
+
+**macOS:**
+```bash
+brew install gh
+gh auth login
+```
+
+**Windows:**
+```bash
+winget install --id GitHub.cli
+# Restart terminal, then:
+gh auth login
+```
+
+**Linux:**
+```bash
+# Debian/Ubuntu
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+
+# Fedora/CentOS/RHEL
+sudo dnf install gh
+
+# Then authenticate
+gh auth login
+```
+
+**Verify:**
+```bash
+gh --version
+gh auth status
+```
+
+---
+
+### Issue: "Error: Pull request #123 not found"
+
+**Possible causes:**
+
+1. **Wrong repository context**
+   ```bash
+   # Check which repo you're in
+   git remote -v
+
+   # If working on a fork, make sure upstream is configured
+   git remote add upstream https://github.com/ORIGINAL_OWNER/REPO.git
+   ```
+
+2. **PR number doesn't exist**
+   ```bash
+   # List recent PRs to verify
+   gh pr list --repo OWNER/REPO
+   ```
+
+3. **Private repository without access**
+   ```bash
+   # Verify your gh auth scope includes private repos
+   gh auth status
+   # Re-authenticate with more permissions if needed
+   gh auth login --scopes repo
+   ```
+
+---
+
+### Issue: Cursor doesn't show file changes
+
+**Solution:**
+
+1. **Make sure you're in Agent mode**, not Composer mode
+   - Agent mode supports multi-step workflows
+   - Composer mode is for single-shot edits
+
+2. **Manually add the rule file to context:**
+   - Click `@` in Cursor chat
+   - Select `.cursor/rules/pr-cleaner-ai.mdc`
+   - Try the command again
+
+3. **Refresh Cursor AI context:**
+   - Close and reopen the project
+   - Or restart Cursor completely
+
+---
+
+### Issue: `.pr-cleaner-ai-output/` appears in git status
+
+**Problem:** You ran `pr-cleaner-ai` before running `init`.
+
+**Solution:**
+```bash
+# Run init to add proper gitignore entries
+npx pr-cleaner-ai init
+
+# Remove tracked files
+git rm -r --cached .pr-cleaner-ai-output/
+git rm --cached .cursor/rules/pr-cleaner-ai.mdc
+
+# Commit the fix
+git add .gitignore
+git commit -m "chore: add pr-cleaner-ai to gitignore"
+```
+
+---
+
+### Issue: "Invalid PR number format"
+
+**Problem:** PR number contains invalid characters or wrong format.
+
+**Valid formats:**
+```txt
+✅ PR 123
+✅ PR#123
+✅ #123
+✅ fix PR 123
+✅ resolve PR comments for 123
+```
+
+**Invalid formats:**
+```txt
+❌ PR123abc
+❌ PR #123 (extra space)
+❌ PR-123 (hyphen)
+```
+
+---
+
+### Issue: Comments not fetched or outdated
+
+**Solution:**
+
+1. **Check your network connection**
+   ```bash
+   # Test GitHub API access
+   gh api user
+   ```
+
+2. **Clear cached output and re-fetch**
+   ```bash
+   rm -rf .pr-cleaner-ai-output/
+   npx pr-cleaner-ai fetch --pr=123
+   ```
+
+3. **Verify PR has review comments**
+   ```bash
+   gh pr view 123 --comments
+   ```
+
+---
+
+### Issue: Node.js version error
+
+**Problem:** `pr-cleaner-ai` requires Node.js >= 16
+
+**Solution:**
+```bash
+# Check your Node version
+node --version
+
+# If < 16, upgrade:
+# Using nvm (recommended)
+nvm install 18
+nvm use 18
+
+# Or download from nodejs.org
+```
+
+---
+
 ## ❓ FAQ
 
 ### What happens when I switch branches?
