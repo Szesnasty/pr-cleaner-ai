@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.3.0...v1.4.0) (2025-11-06)
+
+
+### Features
+
+* **security:** comprehensive security hardening with unified limits ([54e3cee](https://github.com/Szesnasty/pr-cleaner-ai/commit/54e3cee618f95f4bba7eab2245ec5e25cce67c2d))
+
 ## [1.3.0](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.2.12...v1.3.0) (2025-11-05)
 
 
