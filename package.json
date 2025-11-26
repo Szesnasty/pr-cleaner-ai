@@ -1,85 +1,87 @@
 {
-    "name": "pr-cleaner-ai",
-    "version": "1.4.0",
-    "description": "Cursor + GitHub PR cleanup assistant. Local dev tool (install as devDependency).",
-    "bin": {
-        "pr-cleaner-ai": "dist/index.js"
-    },
-    "scripts": {
-        "build": "tsc",
-        "postinstall": "node scripts/postinstall.js",
-        "prepublishOnly": "npm run build && npm run clean:maps",
-        "clean:maps": "find dist -name '*.map' -delete"
-    },
-    "files": [
-        "bin/",
-        "dist/",
-        "scripts/",
-        "config/pr-cleaner-ai.mdc",
-        "README.md",
-        "LICENSE",
-        "CHANGELOG.md",
-        "SECURITY.md",
-        "CODE_OF_CONDUCT.md",
-        "CONTRIBUTING.md"
-    ],
-    "keywords": [
-        "cursor",
-        "cursor-ai",
-        "github-cli",
-        "gh-cli",
-        "pull-request",
-        "github-pr",
-        "pr-comments",
-        "code-review",
-        "review-comments",
-        "code-review-automation",
-        "automation",
-        "developer-tools",
-        "developer-productivity",
-        "devtool",
-        "merge-ready",
-        "pr-cleanup",
-        "github-integration"
-    ],
-    "author": {
-        "name": "Łukasz Jakubowski",
-        "email": "lukasz.jakubowski1993@gmail.com",
-        "url": "https://github.com/Szesnasty"
-    },
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Szesnasty/pr-cleaner-ai.git"
-    },
-    "bugs": {
-        "url": "https://github.com/Szesnasty/pr-cleaner-ai/issues"
-    },
-    "homepage": "https://github.com/Szesnasty/pr-cleaner-ai#readme",
-    "funding": {
-        "type": "github",
-        "url": "https://github.com/sponsors/Szesnasty"
-    },
-    "engines": {
-        "node": ">=16"
-    },
-    "sideEffects": false,
-    "dependencies": {
-        "tsx": "^4.20.6"
-    },
-    "peerDependencies": {
-        "typescript": ">=4.0.0"
-    },
-    "peerDependenciesMeta": {
-        "typescript": {
-            "optional": true
-        }
-    },
-    "devDependencies": {
-        "@types/node": "^24.10.0",
-        "typescript": "^5.9.3"
-    },
-    "publishConfig": {
-        "provenance": true
+  "name": "pr-cleaner-ai",
+  "version": "1.4.0",
+  "description": "Cursor + GitHub PR cleanup assistant. Local dev tool (install as devDependency).",
+  "bin": {
+    "pr-cleaner-ai": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "node scripts/postinstall.js",
+    "prepublishOnly": "npm run build && npm run clean:maps",
+    "clean:maps": "find dist -name '*.map' -delete",
+    "test:comments-service": "ts-node src/test/testCommentsService.ts"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "scripts/",
+    "config/pr-cleaner-ai.mdc",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md"
+  ],
+  "keywords": [
+    "cursor",
+    "cursor-ai",
+    "github-cli",
+    "gh-cli",
+    "pull-request",
+    "github-pr",
+    "pr-comments",
+    "code-review",
+    "review-comments",
+    "code-review-automation",
+    "automation",
+    "developer-tools",
+    "developer-productivity",
+    "devtool",
+    "merge-ready",
+    "pr-cleanup",
+    "github-integration"
+  ],
+  "author": {
+    "name": "Łukasz Jakubowski",
+    "email": "lukasz.jakubowski1993@gmail.com",
+    "url": "https://github.com/Szesnasty"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Szesnasty/pr-cleaner-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Szesnasty/pr-cleaner-ai/issues"
+  },
+  "homepage": "https://github.com/Szesnasty/pr-cleaner-ai#readme",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/Szesnasty"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "sideEffects": false,
+  "dependencies": {
+    "tsx": "^4.20.6"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
     }
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "provenance": true
+  }
 }
