@@ -138,7 +138,12 @@ export class MarkdownGenerator {
       const sortedFiles = Array.from(byFile.keys()).sort();
 
       for (const file of sortedFiles) {
+        // Generate local file path (absolute)
+        const localFilePath = path.resolve(process.cwd(), file);
+        const githubFileUrl = `https://github.com/${this.owner}/${this.repo}/blob/HEAD/${file}`;
+        
         markdown += `### 📄 \`${file}\`\n\n`;
+        markdown += `**Links:** [📂 Open locally](${localFilePath}) | [🔗 View on GitHub](${githubFileUrl})\n\n`;
 
         const groups = byFile.get(file)!;
         // Sort by line
@@ -146,7 +151,12 @@ export class MarkdownGenerator {
 
         for (const group of groups) {
           if (group.line) {
+            // Add links to specific line - both local and GitHub
+            const localFileLineUrl = `${localFilePath}:${group.line}`;
+            const githubLineUrl = `https://github.com/${this.owner}/${this.repo}/blob/HEAD/${file}#L${group.line}`;
+            
             markdown += `#### Line ${group.line}\n\n`;
+            markdown += `**Jump to:** [📂 Local file:${group.line}](${localFileLineUrl}) | [🔗 GitHub](${githubLineUrl})\n\n`;
           }
 
           for (const comment of group.comments) {
@@ -176,7 +186,9 @@ export class MarkdownGenerator {
       for (const comment of group.comments) {
         // All comments in groupedComments are unresolved (resolved ones are filtered out)
         const lineInfo = group.line ? ` (line ${group.line})` : '';
-        markdown += `- [ ] ⏳ \`${group.file}\`${lineInfo} - @${comment.author}\n`;
+        const localFilePath = path.resolve(process.cwd(), group.file);
+        const fileLink = group.line ? `${localFilePath}:${group.line}` : localFilePath;
+        markdown += `- [ ] ⏳ [\`${group.file}\`${lineInfo}](${fileLink}) - @${comment.author}\n`;
       }
     }
     
