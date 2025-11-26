@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.4.0...v1.4.1) (2025-11-26)
+
+
+### Bug Fixes
+
+* add clickable links to local files and GitHub in markdown output ([#26](https://github.com/Szesnasty/pr-cleaner-ai/issues/26)) ([4ecd757](https://github.com/Szesnasty/pr-cleaner-ai/commit/4ecd7570883db0341032ef2a5b4bbc0c40927ac6))
+
 ## [1.4.0](https://github.com/Szesnasty/pr-cleaner-ai/compare/v1.3.0...v1.4.0) (2025-11-06)
 
 
