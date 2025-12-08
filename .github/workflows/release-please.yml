@@ -29,7 +29,7 @@ jobs:
         with:
           ref: ${{ steps.release.outputs.tag_name }}
 
-      - uses: actions/setup-node@v4.0.3
+      - uses: actions/setup-node@v6.0.0
         if: ${{ steps.release.outputs.release_created }}
         with:
           node-version: 20
